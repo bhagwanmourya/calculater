@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculator with History</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #7bc829;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 40px;
+    }
+
+    .calculator {
+      background: #333;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 320px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .display {
+      background: black;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 2rem;
+      text-align: right;
+      margin-bottom: 10px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .buttons button {
+      padding: 20px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 5px;
+      background: #555;
+      color: white;
+      cursor: pointer;
+    }
+
+    .buttons button:hover {
+      background: #777;
+    }
+
+    .history {
+      margin-top: 20px;
+      background: #222;
+      border-radius: 10px;
+      padding: 10px;
+      max-width: 320px;
+      width: 100%;
+    }
+
+    .history h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .history-list {
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+
+    .clear-history {
+      background: red;
+      color: white;
+      padding: 5px;
+      border: none;
+      border-radius: 4px;
+      margin-top: 5px;
+      cursor: pointer;
+      float: right;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button onclick="append('/')">÷</button>
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button onclick="append('*')">×</button>
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button onclick="append('-')">−</button>
+      <button onclick="append('0')">0</button>
+      <button onclick="append('.')">.</button>
+      <button onclick="calculate()">=</button>
+      <button onclick="append('+')">+</button>
+      <button onclick="clearDisplay()">C</button>
+    </div>
+  </div>
+
+  <div class="history">
+    <h3>History</h3>
+    <div class="history-list" id="history-list"></div>
+    <button class="clear-history" onclick="clearHistory()">Clear</button>
+  </div>
+
+  <script>
+    let currentInput = "";
+    let history = [];
+
+    function append(value) {
+      if (currentInput === "0" && value !== ".") {
+        currentInput = value;
+      } else {
+        currentInput += value;
+      }
+      updateDisplay();
+    }
+
+    function clearDisplay() {
+      currentInput = "";
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById("display").innerText = currentInput || "0";
+    }
+
+    function calculate() {
+      try {
+        const result = eval(currentInput);
+        addToHistory(currentInput + " = " + result);
+        currentInput = result.toString();
+        updateDisplay();
+      } catch {
+        currentInput = "Error";
+        updateDisplay();
+      }
+    }
+
+    function addToHistory(entry) {
+      history.unshift(entry);
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const historyList = document.getElementById("history-list");
+      historyList.innerHTML = history.map(item => `<div>${item}</div>`).join("");
+    }
+
+    function clearHistory() {
+      history = [];
+      renderHistory();
+    }
+
+    // Load default display
+    updateDisplay();
+  </script>
+</body>
+</html>
